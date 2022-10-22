@@ -1,4 +1,6 @@
-cluster: cluster-basic cluster-lb cluster-ingress
+
+# we dont create the cluster-lb as default it takes very long
+cluster: cluster-basic cluster-ingress
 
 cluster-basic:
 	cat template/config.tpl.yaml | sed -e 's|PWD|'$$(pwd)'|g' | sed -e 's/127.0.0.1/'$$(hostname -I | awk '{print $$1}')'/'  > ./config.yaml
@@ -89,3 +91,26 @@ remove-dummy-lb-ingress:
 	kubectl delete -n default service foo-service
 	kubectl delete -n default pod bar-app
 	kubectl delete -n default pod foo-app
+
+# https://adamtheautomator.com/postgres-to-kubernetes/#Deploying_PostgreSQL_to_Kubernetes_Manually
+postgres:
+	kubectl apply -f examples/postgres/postgres-configmap.yaml
+	# kubectl get configmap
+	kubectl apply -f examples/postgres/postgres-volume.yaml
+	# kubectl get pv
+	kubectl apply -f examples/postgres/postgres-pvc.yaml
+	# kubectl get pvc
+	kubectl apply -f examples/postgres/postgres-deployment.yaml
+	# kubectl get deployments
+	# kubectl get pods
+	kubectl apply -f examples/postgres/postgres-service.yaml
+	# kubectl get svc
+	# POD=$$(kubectl get pod -l app=postgres -o jsonpath="{.items[0].metadata.name}")
+	# kubectl exec -it $${POD} -- psql -h localhost -U appuser --password -p 5432 appdb
+
+remove-postgres:
+	kubectl delete -n default service postgres
+	kubectl delete -n default deployment postgres
+	kubectl delete -n default persistentvolumeclaim postgres-volume-claim
+	kubectl delete -n default persistentvolume postgres-volume
+	kubectl delete -n default configmap postgres-secret
