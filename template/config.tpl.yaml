@@ -1,0 +1,54 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+networking:
+  apiServerAddress: "127.0.0.1"
+  apiServerPort: 33333
+nodes:
+- role: control-plane
+  # add a mount from $(pwd)/data on the host to /mnt/data on the node
+  extraMounts:
+  - hostPath: PWD/data
+    containerPath: /mnt/data
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+  extraPortMappings:
+  # ingress
+  - containerPort: 80
+    hostPort: 8000
+    protocol: TCP
+  # ingress
+  - containerPort: 443
+    hostPort: 8443
+    protocol: TCP
+  # port forward 9090 on the host to 9090 on this node
+  - containerPort: 9090
+    hostPort: 9090
+    # optional: set the bind address on the host
+    # 0.0.0.0 is the current default
+    # listenAddress: "127.0.0.1"
+    # optional: set the protocol to one of TCP, UDP, SCTP.
+    # TCP is the default
+    # protocol: TCP
+
+# :(
+# no idea how to make worker nodes with ingress
+# ingress runs fine without the workers - it forwards the containerPort ports
+# however - if a pod is running on the worker, the forwarding to the hosts
+# isn't properly setup... no idea
+
+# - role: worker
+#   extraMounts:
+#   - hostPath: PWD/data
+#     containerPath: /mnt/data
+# - role: worker
+#   extraMounts:
+#   - hostPath: PWD/data
+#     containerPath: /mnt/data
+# - role: worker
+#   extraMounts:
+#   - hostPath: PWD/data
+#     containerPath: /mnt/data
