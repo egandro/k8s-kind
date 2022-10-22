@@ -6,10 +6,9 @@ containerdConfigPatches:
     endpoint = ["http://REGISTRY_NAME:5000"]
 networking:
   apiServerAddress: "127.0.0.1"
-  apiServerPort: 33333
+  #apiServerPort: 33333
 nodes:
 - role: control-plane
-  # add a mount from $(pwd)/data on the host to /mnt/data on the node
   extraMounts:
   - hostPath: PWD/data/controller
     containerPath: /mnt/data
@@ -37,15 +36,6 @@ nodes:
   # ingress
   - containerPort: 443
     hostPort: 8443
-  # port forward 9090 on the host to 9090 on this node
-  - containerPort: 9090
-    hostPort: 9090
-    # optional: set the bind address on the host
-    # 0.0.0.0 is the current default
-    # listenAddress: "127.0.0.1"
-    # optional: set the protocol to one of TCP, UDP, SCTP.
-    # TCP is the default
-    # protocol: TCP
   extraMounts:
   - hostPath: PWD/data/worker1
     containerPath: /mnt/data
