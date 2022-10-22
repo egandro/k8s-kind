@@ -10,6 +10,17 @@ spec:
     image: localhost:5001/webapp:latest
     # https://iximiuz.com/en/posts/kubernetes-kind-load-docker-image/
     imagePullPolicy: IfNotPresent
+    env:
+      - name: POSTGRES_HOST
+        value: postgres
+      - name: POSTGRES_PORT
+        value: "5432"
+    envFrom:
+      - configMapRef:
+          name: postgres-config # Using the ConfigMap postgres-secret
+      - secretRef:
+          name: postgres-secrets
+
   nodeSelector:
     "ingress-ready": "true"
 ---

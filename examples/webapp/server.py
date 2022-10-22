@@ -2,9 +2,17 @@ import http.server
 import socketserver
 import psycopg2
 from http import HTTPStatus
+from os import getenv
 
-web_port=3000
+
+web_port=getenv("WEB_PORT", 3000)
 conn = None
+
+POSTGRES_HOST = getenv("POSTGRES_HOST")
+POSTGRES_PORT = getenv("POSTGRES_PORT", 5432)
+POSTGRES_DB = getenv("POSTGRES_DB")
+POSTGRES_USER = getenv("POSTGRES_USER")
+POSTGRES_PASSWORD = getenv("POSTGRES_PASSWORD")
 
 def get_pg_version() -> str:
     global conn
@@ -13,11 +21,11 @@ def get_pg_version() -> str:
         if conn is None:
             # https://www.postgresqltutorial.com/postgresql-python/connect/
             conn = psycopg2.connect(
-                    host="postgres",
-                    dbname="appdb",
-                    user="appuser",
-                    port="5432",
-                    password="secret"
+                    host=POSTGRES_HOST,
+                    port=POSTGRES_PORT,
+                    dbname=POSTGRES_DB,
+                    user=POSTGRES_USER,
+                    password=POSTGRES_PASSWORD
                 )
         if conn is None:
             print(f"connection failed")

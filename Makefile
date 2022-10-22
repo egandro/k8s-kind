@@ -126,6 +126,8 @@ remove-dummy-lb-ingress:
 # https://adamtheautomator.com/postgres-to-kubernetes/#Deploying_PostgreSQL_to_Kubernetes_Manually
 # we must have a per
 postgres:
+	kubectl apply -f examples/postgres/postgres-secrets.yaml
+	# kubectl get secret postgres-secrets -o jsonpath='{.data.POSTGRES_USER}'  | base64 -d
 	kubectl apply -f examples/postgres/postgres-configmap.yaml
 	# kubectl get configmap
 	kubectl apply -f examples/postgres/postgres-volume.yaml
@@ -146,7 +148,8 @@ remove-postgres:
 	kubectl delete -n default deployment postgres
 	kubectl delete persistentvolumeclaim postgres-volume-claim
 	kubectl delete persistentvolume postgres-volume
-	kubectl delete -n default configmap postgres-secret
+	kubectl delete -n default configmap postgres-config
+	kubectl delete -n default secret postgres-secrets
 
 # the shell will run in the background if kubectl is down - so delete the pod when quitting :)
 k8sshell:

@@ -22,7 +22,9 @@ spec:
             - containerPort: 5432 # Exposing the container port 5432 for PostgreSQL client connections.
           envFrom:
             - configMapRef:
-                name: postgres-secret # Using the ConfigMap postgres-secret
+                name: postgres-config
+            - secretRef:
+                name: postgres-secrets # https://humanitec.com/blog/handling-environment-variables-with-kubernetes
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: postgresdata
