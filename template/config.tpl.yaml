@@ -7,8 +7,10 @@ nodes:
 - role: control-plane
   # add a mount from $(pwd)/data on the host to /mnt/data on the node
   extraMounts:
-  - hostPath: PWD/data
+  - hostPath: PWD/data/controller
     containerPath: /mnt/data
+  - hostPath: PWD/data/shared
+    containerPath: /mnt/shared
   kubeadmConfigPatches:
   - |
     kind: InitConfiguration
@@ -41,8 +43,10 @@ nodes:
     # TCP is the default
     # protocol: TCP
   extraMounts:
-  - hostPath: PWD/data
+  - hostPath: PWD/data/worker1
     containerPath: /mnt/data
+  - hostPath: PWD/data/shared
+    containerPath: /mnt/shared
 - role: worker
   kubeadmConfigPatches:
     - |
@@ -51,8 +55,10 @@ nodes:
         kubeletExtraArgs:
           node-labels: "my-label3=true"
   extraMounts:
-  - hostPath: PWD/data
+  - hostPath: PWD/data/worker2
     containerPath: /mnt/data
+  - hostPath: PWD/data/shared
+    containerPath: /mnt/shared
 - role: worker
   kubeadmConfigPatches:
     - |
@@ -61,5 +67,7 @@ nodes:
         kubeletExtraArgs:
           node-labels: "my-label4=true"
   extraMounts:
-  - hostPath: PWD/data
+  - hostPath: PWD/data/worker3
     containerPath: /mnt/data
+  - hostPath: PWD/data/shared
+    containerPath: /mnt/shared

@@ -40,16 +40,20 @@ dashboard:
 
 destroy:
 	kind delete cluster
+	rm -f token
 
 rebuild: destroy cluster
 
 # https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
+# 	kubectl apply -f https://k8s.io/examples/pods/storage/pv-volume.yaml
+#	kubectl apply -f https://k8s.io/examples/pods/storage/pv-claim.yaml
+#	kubectl apply -f https://k8s.io/examples/pods/storage/pv-pod.yaml
 dummy-mount:
-	kubectl apply -f https://k8s.io/examples/pods/storage/pv-volume.yaml
+	kubectl apply -f examples/mount/pv-volume.yaml
 	# kubectl get pv task-pv-volume
-	kubectl apply -f https://k8s.io/examples/pods/storage/pv-claim.yaml
+	kubectl apply -f examples/mount/pv-claim.yaml
 	# kubectl get pvc task-pv-claim
-	kubectl apply -f https://k8s.io/examples/pods/storage/pv-pod.yaml
+	kubectl apply -f examples/mount/pv-pod.yaml
 	#kubectl exec -it task-pv-pod -- /bin/bash
 	#kubectl exec -it task-pv-pod -- /bin/ls -la /usr/share/nginx/html
 
@@ -93,6 +97,7 @@ remove-dummy-lb-ingress:
 	kubectl delete -n default pod foo-app
 
 # https://adamtheautomator.com/postgres-to-kubernetes/#Deploying_PostgreSQL_to_Kubernetes_Manually
+# we must have a per
 postgres:
 	kubectl apply -f examples/postgres/postgres-configmap.yaml
 	# kubectl get configmap
@@ -111,8 +116,8 @@ postgres:
 remove-postgres:
 	kubectl delete -n default service postgres
 	kubectl delete -n default deployment postgres
-	kubectl delete -n default persistentvolumeclaim postgres-volume-claim
-	kubectl delete -n default persistentvolume postgres-volume
+	kubectl delete persistentvolumeclaim postgres-volume-claim
+	kubectl delete persistentvolume postgres-volume
 	kubectl delete -n default configmap postgres-secret
 
 # the shell will run in the background if kubectl is down - so delete the pod when quitting :)
