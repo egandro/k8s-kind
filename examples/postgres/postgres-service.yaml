@@ -5,7 +5,9 @@ metadata:
   labels:
     app: postgres # Defines app to create service for
 spec:
-  type: NodePort # Sets the service type
+  # https://www.bmc.com/blogs/kubernetes-postgresql/
+  type: LoadBalancer # Sets the service type
+  #type: NodePort # Sets the service type
   ports:
     - port: 5432 # Sets the port to run the postgres application
   selector:

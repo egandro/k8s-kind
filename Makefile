@@ -112,6 +112,7 @@ postgres:
 	# kubectl get svc
 	# POD=$$(kubectl get pod -l app=postgres -o jsonpath="{.items[0].metadata.name}")
 	# kubectl exec -it $${POD} -- psql -h localhost -U appuser --password -p 5432 appdb
+	# kubectl logs -f $${POD}
 
 remove-postgres:
 	kubectl delete -n default service postgres
@@ -122,5 +123,9 @@ remove-postgres:
 
 # the shell will run in the background if kubectl is down - so delete the pod when quitting :)
 k8sshell:
+	# apt update
+	# apt install -y iputils-ping
+	# apt install -y postgresql-client
+	# psql -h postgres -U appuser --password -p 5432 appdb
 	kubectl run --stdin --tty k8sshell --image=ubuntu:22.04 --command -- /bin/bash
 	kubectl delete pod k8sshell

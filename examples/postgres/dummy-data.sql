@@ -13,7 +13,7 @@ WITH salary_list AS (
 INSERT INTO public.employee
 (id, name, salary)
 SELECT n, 'Employee ' || n as name, salary[1 + mod(n, array_length(salary, 1))]
-FROM salary_list, generate_series(1, 100) as n
+FROM salary_list, generate_series(1, 100) as n;
 
 
 select * from public.employee where id < 5;

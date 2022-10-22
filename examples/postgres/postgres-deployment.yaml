@@ -3,7 +3,9 @@ kind: Deployment # Create a deployment
 metadata:
   name: postgres # Set the name of the deployment
 spec:
-  replicas: 3 # Set 3 deployment replicas
+  #replicas: 3 # Set 3 deployment replicas
+  # i have no idea if >1 replica can have a shared datadir
+  # https://medium.com/@xcoulon/storing-data-into-persistent-volumes-on-kubernetes-fb155da16666
   selector:
     matchLabels:
       app: postgres
