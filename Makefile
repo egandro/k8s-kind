@@ -1,4 +1,4 @@
-cluster: cluster-basic cluster-lb
+cluster: cluster-basic cluster-ingress
 
 cluster-basic:
 	cat template/config.tpl.yaml | sed -e 's|PWD|'$$(pwd)'|g' | sed -e 's/127.0.0.1/'$$(hostname -I | awk '{print $$1}')'/'  > ./config.yaml
@@ -9,13 +9,15 @@ cluster-basic:
 # 8000 / 8443
 cluster-ingress:
 	kubectl apply -f https://projectcontour.io/quickstart/contour.yaml
+	# only for nodes with ingress ready
+	kubectl patch daemonsets -n projectcontour envoy -p '{"spec":{"template":{"spec":{"nodeSelector":{"ingress-ready":"true"},"tolerations":[{"key":"node-role.kubernetes.io/control-plane","operator":"Equal","effect":"NoSchedule"},{"key":"node-role.kubernetes.io/master","operator":"Equal","effect":"NoSchedule"}]}}}}'
 
 # metallb https://kind.sigs.k8s.io/docs/user/loadbalancer/
 cluster-lb:
 	kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.7/config/manifests/metallb-native.yaml
 	cat template/metallb-config.tpl.yaml| sed -e 's|PREFIX|'$$(docker network inspect -f "{{.IPAM.Config}}" kind | sed -s "s|^\[{||" | sed -s "s|\.0/16.*||")'|g'  > ./metallb-config.yaml
 	# wait for metallb to be ready
-	sleep 30
+	sleep 30 # hit me with a stick
 	kubectl wait --namespace metallb-system \
 					--for=condition=ready pod \
 					--selector=app=metallb \
@@ -28,6 +30,7 @@ destroy:
 
 rebuild: destroy cluster
 
+# https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
 dummy-mount:
 	kubectl apply -f https://k8s.io/examples/pods/storage/pv-volume.yaml
 	# kubectl get pv task-pv-volume
@@ -37,8 +40,10 @@ dummy-mount:
 	#kubectl exec -it task-pv-pod -- /bin/bash
 	#ls -la /usr/share/nginx/html
 
+# kubectl get nodes --show-labels
+# kubectl apply -f https://kind.sigs.k8s.io/examples/ingress/usage.yaml # nodeSelector missing
 dummy-ingress:
-	kubectl apply -f https://kind.sigs.k8s.io/examples/ingress/usage.yaml
+	kubectl apply -f examples/ingress-usage.yaml
 	# curl localhost:8000/foo
 	# curl localhost:8000/bar
 
