@@ -1,4 +1,5 @@
 config.yaml
 metallb-config.yaml
+localregistry.yaml
 data
 token

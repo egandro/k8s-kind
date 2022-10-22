@@ -1,0 +1,42 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: webapp
+  labels:
+    app: web
+spec:
+  containers:
+  - name: webapp
+    image: localhost:5001/webapp:latest
+    # https://iximiuz.com/en/posts/kubernetes-kind-load-docker-image/
+    imagePullPolicy: IfNotPresent
+  nodeSelector:
+    "ingress-ready": "true"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: webapp-service
+spec:
+  selector:
+    app: web
+  ports:
+  # Default port used by the image
+  - port: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: webapp-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - pathType: Prefix
+        path: "/webapp"
+        backend:
+          service:
+            name: webapp-service
+            port:
+              number: 3000
+---

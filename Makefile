@@ -1,11 +1,38 @@
+REGISTRY_NAME=kind-registry
+REGISTRY_PORT=5001
 
 # we dont create the cluster-lb as default it takes very long
-cluster: cluster-basic cluster-ingress
+cluster: kind-registry cluster-basic cluster-ingress
+
+# https://kind.sigs.k8s.io/docs/user/local-registry/
+kind-registry:
+	if [ "$$(docker inspect -f '{{.State.Running}}' "$(REGISTRY_NAME)" 2>/dev/null || true)" != 'true' ]; then \
+		docker run \
+			-d --restart=always -p "127.0.0.1:$(REGISTRY_PORT):5000" --name "$(REGISTRY_NAME)" \
+			registry:2; \
+	fi
+
+remove-kind-registry:
+	docker rm -f "$(REGISTRY_NAME)"
 
 cluster-basic:
-	cat template/config.tpl.yaml | sed -e 's|PWD|'$$(pwd)'|g' | sed -e 's/127.0.0.1/'$$(hostname -I | awk '{print $$1}')'/'  > ./config.yaml
+	cat template/config.tpl.yaml | \
+		sed -e 's|PWD|'$$(pwd)'|g' | \
+		sed -e 's|REGISTRY_NAME|'$(REGISTRY_NAME)'|g' | \
+		sed -e 's|REGISTRY_PORT|'$(REGISTRY_PORT)'|g' | \
+		sed -e 's/127.0.0.1/'$$(hostname -I | awk '{print $$1}')'/'  \
+		> ./config.yaml
 	kind create cluster --config=config.yaml
 	rm -f config.yaml
+	# connect the registry to the cluster network if not already connected
+	if [ "$(docker inspect -f='{{json .NetworkSettings.Networks.kind}}' "$(REGISTRY_NAME)")" = 'null' ]; then \
+		docker network connect "kind" "$(REGISTRY_NAME)"; \
+	fi
+	cat template/localregistry.tpl.yaml | \
+		sed -e 's|REGISTRY_PORT|'$(REGISTRY_PORT)'|g' \
+		> ./localregistry.yaml
+	kubectl apply -f localregistry.yaml
+	rm -f localregistry.yaml
 
 # contour https://kind.sigs.k8s.io/docs/user/ingress/
 # 8000 / 8443
@@ -129,3 +156,14 @@ k8sshell:
 	# psql -h postgres -U appuser --password -p 5432 appdb
 	kubectl run --stdin --tty k8sshell --image=ubuntu:22.04 --command -- /bin/bash
 	kubectl delete pod k8sshell
+
+webapp:
+	cd examples/webapp && make build
+	kind load docker-image localhost:5001/webapp:latest
+	kubectl apply -f examples/webapp/webapp.yaml
+	# curl localhost:8000/webapp
+
+remove-webapp:
+	kubectl delete -n default ingress webapp-ingress
+	kubectl delete -n default service webapp-service
+	kubectl delete -n default pod webapp
