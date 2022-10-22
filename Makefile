@@ -114,3 +114,8 @@ remove-postgres:
 	kubectl delete -n default persistentvolumeclaim postgres-volume-claim
 	kubectl delete -n default persistentvolume postgres-volume
 	kubectl delete -n default configmap postgres-secret
+
+# the shell will run in the background if kubectl is down - so delete the pod when quitting :)
+k8sshell:
+	kubectl run --stdin --tty k8sshell --image=ubuntu:22.04 --command -- /bin/bash
+	kubectl delete pod k8sshell
