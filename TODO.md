@@ -7,3 +7,14 @@
     kubectl cluster-info --context kind-kind
     Kubernetes control plane is running at https://xxx:yyy
     CoreDNS is running at https://xxx:yyy/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+- configuration handling: don't overwrite $HOME/.kube/config
+```
+Usage:
+  kind create cluster [flags]
+
+Flags:
+      --config string       path to a kind config file
+  -h, --help                help for cluster
+      --image string        node docker image to use for booting the cluster
+      --kubeconfig string   sets kubeconfig path instead of $KUBECONFIG or $HOME/.kube/config
+```
