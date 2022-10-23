@@ -149,12 +149,13 @@ $ make remove-example-ingress
 ```
 
 The load balancer offers an internal loadbalancer for a webservice, that is not exposed to a public port.
+For reason to make the cluster creation faster, the loadbalancer isn't applyied. You need do to this by `make feature-loadbalancer`.
 
 
 ```
 $ make example-loadbalancer
 $ make k8sshell
-$ # run in the shell (and you see foo / bar cycling)
 $ # apt update && apt get install curl && curl foo-service:5678
+$ # > you see foo / bar cycling
 $ make remove-example-loadbalancer
 ```
