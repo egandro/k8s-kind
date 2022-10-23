@@ -1,13 +1,15 @@
 # Simple examples of how to use kind during development
 
-- Linux host or something with Linux that runs docker (mit also runs on a pi64)
+- Linux host or something with Linux that runs docker (might also run on a Pi4-64)
 - You can access the k8s cluster form outside e.g. developer Windows machine.
-- *Warning*: Do not use a public IP! (read kind documentation about this)
+- *Warning*: Do not use a public IP of the internet for the API Server
+   - read kind documentation about this:
+   - <https://kind.sigs.k8s.io/docs/user/configuration/> yellow box
 
-Read this:
+More documentation:
 
-- Docs: <https://kind.sigs.k8s.io/docs/user/quick-start/>
-- Gitdocs: <https://github.com/kubernetes-sigs/kind>
+- Kind Quickstart: <https://kind.sigs.k8s.io/docs/user/quick-start/>
+- Kind Git: <https://github.com/kubernetes-sigs/kind>
 
 
 ## what you get

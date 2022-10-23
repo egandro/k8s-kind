@@ -1,4 +1,7 @@
 # https://kind.sigs.k8s.io/docs/user/ingress/
+# https://projectcontour.io/kindly-running-contour/
+# https://mjpitz.com/blog/2020/10/21/local-ingress-domains-kind/
+#
 # kubectl get nodes --show-labels
 # kubectl apply -f https://kind.sigs.k8s.io/examples/ingress/usage.yaml # nodeSelector missing
 
