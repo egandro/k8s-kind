@@ -57,9 +57,79 @@ KIND_LATEST=$(get_latest_release kubernetes-sigs/kind)
 go install sigs.k8s.io/kind@${KIND_LATEST}
 ```
 
-## Host volumes
+## Create the cluster
 
 ```
-# default shared volume DATAPATH is $(PWD)/data
-# make cluster DATAPATH=/foo/bar
+$ make cluster
+```
+
+### Feature loadbalancer
+
+```
+# metallb takes some time to load - so it's disable by default
+$ make feature-loadbalancer
+```
+
+### Storage path
+
+```
+# default shared volume $(PWD)/data but you can add your own
+$ make cluster DATAPATH=/foo/bar
+```
+
+### Multiple instances
+
+```
+# in case you need multiple instances
+$ make cluster DATAPATH=/foo/bar CLUSTER_NAME=my-other-kind REGISTRY_PORT=5003 PUBLIC_HTTP_PORT=8090 PUBLIC_HTTPS_PORT=8091
+```
+
+## Applications
+
+Installs the k8s Dashboard. It also creates a user for the dashboard. Kubeclt proxy is used to forward the dashboard.
+
+The dashboard is available here < http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/>. The commmand also shows the required token for a login.
+
+```
+$ make dashboard-connect
+```
+
+Installs a postgress server with a persistant volume. Full feature blown example with secrets storage and configuration variables. It allows an internal connect with host "postgres".
+
+```
+$ make postgres
+$ make remove-postgres # kill postgres - but keep persistant storage
+```
+
+Runs an ubuntu machine in the cluster for doing all sorts of interessting things e.g. debugging and investigating.
+
+```
+$ make k8sshell
+```
+
+Builds and runs a python sample application. It connects to postgres and displays the version.
+
+```
+$ make postgres # ensure it's running
+$ make webapp
+$ curl localhost:8000/webapp
+$ make remove-webapp # kill the webapp
+$ make webapp-replicas # using replicas
+$ curl localhost:8000/webapp
+$ make remove-webapp # kill the webapp
+$ make remove-postgres # we can shut it down
+```
+
+## Examples
+
+Simple example showing features.
+
+Persistant storage examples. There is `shared` storage between all nodes and `worker` storage that is per node only.
+
+As default `$(PWD)/data` is used. At cluster create time `DATAPATH` can be used to have a custom directory.
+
+```
+$ make example-storage
+$ kubectl exec -it storage-pod -- /bin/ls -la /storage/shared /storage/worker
+$ make remove-example-storage
 ```

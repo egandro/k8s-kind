@@ -1,7 +1,7 @@
 # https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md
 dashboard-user:
-	kubectl apply -f apps/dashboard/admin-user.yaml
-	kubectl apply -f apps/dashboard/role.yaml
+	kubectl apply -f apps/kubernetes-dashboard/admin-user.yaml
+	kubectl apply -f apps/kubernetes-dashboard/role.yaml
 	kubectl -n kubernetes-dashboard create token admin-user > token
 
 # https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
