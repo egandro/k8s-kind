@@ -35,12 +35,4 @@ destroy: destroy-clister remove-kind-registry
 
 rebuild: destroy cluster
 
-include app-k8sshell.mk
-include app-kubernetes-dashboard.mk
-include app-postgres.mk
-include app-web-app.mk
-
-include example-ingress.mk
-include example-loadbalancer.mk
-include example-loadbalancer-ingress.mk
-include example-storage.mk
+include makefiles/*.mk
