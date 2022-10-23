@@ -19,3 +19,4 @@ Flags:
       --kubeconfig string   sets kubeconfig path instead of $KUBECONFIG or $HOME/.kube/config
 ```
 - yaml template engine: <https://github.com/con2/emrichen>
+- python cli sample project <https://github.com/pypa/sampleproject>, <https://github.com/realpython/materials/tree/master/typer-cli-python>
