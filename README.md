@@ -133,3 +133,28 @@ $ make example-storage
 $ kubectl exec -it storage-pod -- /bin/ls -la /storage/shared /storage/worker
 $ make remove-example-storage
 ```
+
+Ingress is an inverse proxy. This example shows how to expose a pods content to the world device. We use worker node 1 as public device of the kind cluster and have exported these ports as default during kind cration phase:
+
+- `PUBLIC_HTTP_PORT?=8000`
+- `PUBLIC_HTTPS_PORT?=8443`
+
+This example starts two pods and puts them in the path `/foo` and `bar` of the public http port.
+
+```
+$ make example-ingress
+$ curl localhost:8000/foo
+$ curl localhost:8000/bar
+$ make remove-example-ingress
+```
+
+The load balancer offers an internal loadbalancer for a webservice, that is not exposed to a public port.
+
+
+```
+$ make example-loadbalancer
+$ make k8sshell
+$ # run in the shell (and you see foo / bar cycling)
+$ # apt update && apt get install curl && curl foo-service:5678
+$ make remove-example-loadbalancer
+```
