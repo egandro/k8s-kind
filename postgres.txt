@@ -1,0 +1,6 @@
+- k8s pg: https://adamtheautomator.com/postgres-to-kubernetes/#Deploying_PostgreSQL_to_Kubernetes_Manually < this is sort of bad
+- k8s pg HA: https://medium.com/@SergeyNuzhdin/how-to-deploy-ha-postgresql-cluster-on-kubernetes-3bf9ed60c64f
+- k8s pg HA: https://ralph.blog.imixs.com/2021/06/25/postgresql-ha-kubernetes/
+- Dummy SQL data: https://sureshdsk.dev/how-to-generate-dummy-data-in-postgres
+
+- D

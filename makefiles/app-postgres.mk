@@ -9,6 +9,7 @@
 # kubectl get pods
 # kubectl get svc
 # POD=$(kubectl get pod -l app=postgres -o jsonpath="{.items[0].metadata.name}")
+# PORT=$(kubectl get pod ${POD} --template='{{(index (index .spec.containers 0).ports 0).containerPort}}{{"\n"}}')
 # kubectl exec -it ${POD} -- psql -h localhost -U appuser --password -p 5432 appdb
 # kubectl logs -f ${POD}
 
@@ -19,6 +20,12 @@ postgres:
 	kubectl apply -f apps/postgres/postgres-pvc.yaml
 	kubectl apply -f apps/postgres/postgres-deployment.yaml
 	kubectl apply -f apps/postgres/postgres-service.yaml
+
+# port forwarding: https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/
+postgres-port-forward:
+	POD=$$(kubectl get pod -l app=postgres -o jsonpath="{.items[0].metadata.name}") \
+	PORT=$$(kubectl get pod $${POD} --template='{{(index (index .spec.containers 0).ports 0).containerPort}}{{"\n"}}') \
+	kubectl port-forward deployment/postgres $${PORT}:$${PORT}
 
 remove-postgres:
 	kubectl delete -n default service postgres
