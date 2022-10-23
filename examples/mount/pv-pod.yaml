@@ -9,10 +9,8 @@ spec:
         claimName: task-pv-claim
   containers:
     - name: task-pv-container
-      image: nginx
-      ports:
-        - containerPort: 80
-          name: "http-server"
+      image: alpine
+      command: ["/bin/sh", "-ec", "while :; do echo '.'; sleep 5 ; done"]
       volumeMounts:
-        - mountPath: "/usr/share/nginx/html"
+        - mountPath: "/storage"
           name: task-pv-storage
