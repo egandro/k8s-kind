@@ -1,9 +1,12 @@
 import http.server
 import socketserver
 import psycopg2
+import socket
+
 from http import HTTPStatus
 from os import getenv
 
+myHostName = socket.gethostname()
 
 web_port=getenv("WEB_PORT", 3000)
 conn = None
@@ -46,6 +49,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.send_response(HTTPStatus.OK)
         self.end_headers()
         self.wfile.write(b'Hello world: ')
+        self.wfile.write(b' hostname: (')
+        self.wfile.write(myHostName.encode())
+        self.wfile.write(b') ')
         self.wfile.write(get_pg_version().encode())
 
 httpd = socketserver.TCPServer(('', web_port), Handler)
