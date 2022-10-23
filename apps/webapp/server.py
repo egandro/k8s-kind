@@ -43,6 +43,7 @@ def get_pg_version() -> str:
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
         pg_version = "error: " + str(error)
+        conn = None
     return pg_version
 
 class Handler(http.server.SimpleHTTPRequestHandler):
