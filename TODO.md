@@ -18,3 +18,4 @@ Flags:
       --image string        node docker image to use for booting the cluster
       --kubeconfig string   sets kubeconfig path instead of $KUBECONFIG or $HOME/.kube/config
 ```
+- yaml template engine: <https://github.com/con2/emrichen>
