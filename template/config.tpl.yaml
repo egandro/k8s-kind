@@ -10,9 +10,9 @@ networking:
 nodes:
 - role: control-plane
   extraMounts:
-  - hostPath: PWD/data/controller
+  - hostPath: DATAPATH/data/controller
     containerPath: /mnt/data
-  - hostPath: PWD/data/shared
+  - hostPath: DATAPATH/data/shared
     containerPath: /mnt/shared
   kubeadmConfigPatches:
   - |
@@ -37,9 +37,9 @@ nodes:
   - containerPort: 443
     hostPort: 8443
   extraMounts:
-  - hostPath: PWD/data/worker1
+  - hostPath: DATAPATH/data/worker1
     containerPath: /mnt/data
-  - hostPath: PWD/data/shared
+  - hostPath: DATAPATH/data/shared
     containerPath: /mnt/shared
 - role: worker
   kubeadmConfigPatches:
@@ -49,9 +49,9 @@ nodes:
         kubeletExtraArgs:
           node-labels: "my-label3=true"
   extraMounts:
-  - hostPath: PWD/data/worker2
+  - hostPath: DATAPATH/data/worker2
     containerPath: /mnt/data
-  - hostPath: PWD/data/shared
+  - hostPath: DATAPATH/data/shared
     containerPath: /mnt/shared
 - role: worker
   kubeadmConfigPatches:
@@ -61,7 +61,7 @@ nodes:
         kubeletExtraArgs:
           node-labels: "my-label4=true"
   extraMounts:
-  - hostPath: PWD/data/worker3
+  - hostPath: DATAPATH/data/worker3
     containerPath: /mnt/data
-  - hostPath: PWD/data/shared
+  - hostPath: DATAPATH/data/shared
     containerPath: /mnt/shared

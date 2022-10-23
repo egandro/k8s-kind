@@ -10,6 +10,15 @@ Read this:
 - Gitdocs: <https://github.com/kubernetes-sigs/kind>
 
 
+## what you get
+
+- full feature blown developer k8s
+- it can expose ports to the host machne
+- comes with a local registry
+- can be accessed from a development computer e.g. Windows / Mac running a Linux VM or your home Proxmox/ESXi server
+- config/examples for ingress, loadbalancers, postgres, persistant volumes
+- hello world python app using all of the above
+
 ## Install Kind
 
 - install go: https://go.dev/doc/install
@@ -48,3 +57,9 @@ KIND_LATEST=$(get_latest_release kubernetes-sigs/kind)
 go install sigs.k8s.io/kind@${KIND_LATEST}
 ```
 
+## Host volumes
+
+```
+# default shared volume DATAPATH is $(PWD)/data
+# make cluster DATAPATH=/foo/bar
+```
