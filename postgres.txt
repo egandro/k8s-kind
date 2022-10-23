@@ -1,6 +1,19 @@
-- k8s pg: https://adamtheautomator.com/postgres-to-kubernetes/#Deploying_PostgreSQL_to_Kubernetes_Manually < this is sort of bad
-- k8s pg HA: https://medium.com/@SergeyNuzhdin/how-to-deploy-ha-postgresql-cluster-on-kubernetes-3bf9ed60c64f
-- k8s pg HA: https://ralph.blog.imixs.com/2021/06/25/postgresql-ha-kubernetes/
-- Dummy SQL data: https://sureshdsk.dev/how-to-generate-dummy-data-in-postgres
+Documentation this example is base on:
 
-- D
+- https://adamtheautomator.com/postgres-to-kubernetes/#Deploying_PostgreSQL_to_Kubernetes_Manually
+    - ^^^ this is sort of bad. It spawns a deployment with 3 replicas. Which is not HA.
+    - Either we have 3 instances messing on the same /mnt/data dir
+    - or it's unclear what pod on what node has what datadir
+    - or it is unclear how to access which postgres instance if this is ment as standalone instance
+
+HA example:
+
+- https://www.ecloudcontrol.com/deploy-postgresql-ha-on-kubernetes/ << recent
+    patroni: https://patroni.readthedocs.io/en/latest/kubernetes.html
+    git examples: https://github.com/zalando/patroni/tree/master/kubernetes
+- https://ralph.blog.imixs.com/2021/06/25/postgresql-ha-kubernetes/
+- https://medium.com/@SergeyNuzhdin/how-to-deploy-ha-postgresql-cluster-on-kubernetes-3bf9ed60c64f < very old
+
+Dummy SQL data:
+
+- https://sureshdsk.dev/how-to-generate-dummy-data-in-postgres
