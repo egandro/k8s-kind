@@ -6,7 +6,7 @@ containerdConfigPatches:
     endpoint = ["http://REGISTRY_NAME:5000"]
 networking:
   apiServerAddress: "127.0.0.1"
-  #apiServerPort: 33333
+  #apiServerPort: 33333 # go with random port
 nodes:
 - role: control-plane
   extraMounts:
@@ -14,26 +14,20 @@ nodes:
     containerPath: /mnt/data
   - hostPath: DATAPATH/data/shared
     containerPath: /mnt/shared
-  kubeadmConfigPatches:
-  - |
-    kind: InitConfiguration
-    nodeRegistration:
-      kubeletExtraArgs:
-        node-labels: "my-label1=true"
+  # read about labels: https://kind.sigs.k8s.io/docs/user/configuration/
+  labels:
+    "my-label1": "true"
 - role: worker
-  kubeadmConfigPatches:
-    - |
-      kind: JoinConfiguration
-      nodeRegistration:
-        kubeletExtraArgs:
-          node-labels: "ingress-ready=true,my-label2=true"
+  labels:
+    "tier": "frontend"
+    "my-label2": "true"
+    "ingress-ready": "true" # used to pick this worker as public endpoint port node
   # the first worker node gets the public port for ingress
-  # as soon as we have workers, we can't have pods on the controller
+  # this needs to be moved to the control-plane, if you don' have workers
   extraPortMappings:
   # ingress
   - containerPort: 80
     hostPort: PUBLIC_HTTP_PORT
-  # ingress
   - containerPort: 443
     hostPort: PUBLIC_HTTPS_PORT
   extraMounts:
@@ -42,24 +36,16 @@ nodes:
   - hostPath: DATAPATH/data/shared
     containerPath: /mnt/shared
 - role: worker
-  kubeadmConfigPatches:
-    - |
-      kind: JoinConfiguration
-      nodeRegistration:
-        kubeletExtraArgs:
-          node-labels: "my-label3=true"
+  labels:
+    "my-label3": "true"
   extraMounts:
   - hostPath: DATAPATH/data/worker2
     containerPath: /mnt/data
   - hostPath: DATAPATH/data/shared
     containerPath: /mnt/shared
 - role: worker
-  kubeadmConfigPatches:
-    - |
-      kind: JoinConfiguration
-      nodeRegistration:
-        kubeletExtraArgs:
-          node-labels: "my-label4=true"
+  labels:
+    "my-label4": "true"
   extraMounts:
   - hostPath: DATAPATH/data/worker3
     containerPath: /mnt/data
