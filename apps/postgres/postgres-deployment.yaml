@@ -1,3 +1,14 @@
+########### WARNING ########
+#- https://adamtheautomator.com/postgres-to-kubernetes/#Deploying_PostgreSQL_to_Kubernetes_Manually
+#
+# Doing this as Deployment with replicas is sort of an anti pattern - no idea whit the example
+# from this site does this :(
+#
+#    - It is sort of bad idea. It spawns a deployment with 3 replicas. Which is not HA!
+#    - Either we have 3 instances messing on the same /mnt/data dir
+#    - or it's unclear what pod on what node has what datadir
+#    - or it is unclear how to access which postgres instance if this is ment as standalone instance
+
 apiVersion: apps/v1
 kind: Deployment # Create a deployment
 metadata:
