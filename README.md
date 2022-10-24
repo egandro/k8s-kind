@@ -24,31 +24,8 @@ More documentation:
 ## Install Kind
 
 - install go: https://go.dev/doc/install
-- fast lane
-```
-ARCH=$(dpkg --print-architecture)
-case "${ARCH}" in
-	amd64) GO_ARCH=amd64;;
-	arm64) GO_ARCH=arm64;;
-	armhf) GO_ARCH=armv6l;;
-	*) echo "unsupported architecture"; exit 1 ;;
-esac
-GO_LATEST=$(curl -L -s https://golang.org/VERSION?m=text)
-GO_INSTALLER=${GO_LATEST}.linux-${GO_ARCH}.tar.gz
-sudo wget -c -t0 "https://dl.google.com/go/${GO_INSTALLER}"
-sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf ${GO_INSTALLER}
-sudo rm -f ${GO_INSTALLER}
-sudo rm -f /etc/profile.d/go-env.sh
-sudo /bin/sh -c 'echo "export PATH=\$PATH:/usr/local/go/bin" >> /etc/profile.d/go-env.sh'
-sudo /bin/sh -c 'echo "export GOPATH=\$HOME/.golib" >> /etc/profile.d/go-env.sh'
-sudo /bin/sh -c 'echo "export PATH=\$PATH:\$GOPATH/bin" >> /etc/profile.d/go-env.sh'
-sudo /bin/sh -c 'echo "export GOPATH=\$GOPATH:\$HOME/projects/go" >> /etc/profile.d/go-env.sh'
+- fast lane:
 
-. /etc/profile.d/go-env.sh
-```
-- install kind: `go install sigs.k8s.io/kind@{{< stableVersion >}}`
-- fastlane
 ```
 get_latest_release() {
   curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
@@ -56,7 +33,12 @@ get_latest_release() {
     sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
 }
 KIND_LATEST=$(get_latest_release kubernetes-sigs/kind)
-go install sigs.k8s.io/kind@${KIND_LATEST}
+ARCH=$(dpkg --print-architecture 2>/dev/null || echo "amd64")
+
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/${KIND_LATEST}/kind-linux-${ARCH}
+chmod +x ./kind
+sudo mv ./kind /usr/local/bin/kind
+
 ```
 
 ## Create the cluster
